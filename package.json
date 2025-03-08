@@ -5,5 +5,7 @@
   "description": "Package contains simplest event bus implementation",
   "author": {
     "name": "DaniilCoolUkraine"
-  }
+  },
+  "changelogUrl": "https://github.com/DaniilCoolUkraine/SimpleEventBus/blob/origin/main/CHANGELOG.md",
+  "documentationUrl": "https://github.com/DaniilCoolUkraine/SimpleEventBus/blob/origin/main/README.md"
 }
