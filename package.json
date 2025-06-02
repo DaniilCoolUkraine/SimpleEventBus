@@ -1,6 +1,6 @@
 {
   "name": "com.daniilcoolukraine.simpleeventbus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Simple Event Bus",
   "description": "Package contains simplest event bus implementation",
   "author": {
