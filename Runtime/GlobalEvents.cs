@@ -5,27 +5,26 @@ namespace SimpleEventBus.SimpleEventBus.Runtime
 {
     public static class GlobalEvents
     {
-        private static readonly Dictionary<Type, List<Delegate>> _eventListeners = new();
+        private static readonly Dictionary<Type, Delegate> _eventListeners = new();
 
         public static void AddListener<T>(Action<T> listener) where T : IEvent
         {
-            if (!_eventListeners.ContainsKey(typeof(T)))
-            {
-                _eventListeners[typeof(T)] = new List<Delegate>();
-            }
-
-            _eventListeners[typeof(T)].Add(listener);
+            if (_eventListeners.TryGetValue(typeof(T), out var existingListeners))
+                _eventListeners[typeof(T)] = Delegate.Combine(existingListeners, listener);
+            else
+                _eventListeners[typeof(T)] = listener;
         }
 
         public static void RemoveListener<T>(Action<T> listener) where T : IEvent
         {
-            if (_eventListeners.TryGetValue(typeof(T), out var listeners))
+            if (_eventListeners.TryGetValue(typeof(T), out var existingListeners))
             {
-                listeners.Remove(listener);
-                if (listeners.Count == 0)
-                {
+                var newDelegate = Delegate.Remove(existingListeners, listener);
+
+                if (newDelegate == null)
                     _eventListeners.Remove(typeof(T));
-                }
+                else
+                    _eventListeners[typeof(T)] = newDelegate;
             }
         }
 
@@ -33,10 +32,7 @@ namespace SimpleEventBus.SimpleEventBus.Runtime
         {
             if (_eventListeners.TryGetValue(typeof(T), out var listeners))
             {
-                foreach (var listener in listeners)
-                {
-                    ((Action<T>)listener).Invoke(@event);
-                }
+                ((Action<T>)listeners).Invoke(@event);
             }
         }
     }
